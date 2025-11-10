@@ -1,0 +1,2 @@
+-- Seed data SQL script
+-- Add your seed data here
