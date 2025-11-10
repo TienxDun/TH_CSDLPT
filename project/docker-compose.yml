@@ -1,24 +1,42 @@
-version: '3.8'
-
-services:
-  app:
+services: 
+  mssql_single: 
+    image: mcr.microsoft.com/mssql/server:2022-latest 
+    container_name: mssql_single
+    networks:
+      - huflit-network
+    environment: 
+      - ACCEPT_EULA=Y 
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
+      - MSSQL_PID=Developer 
+    ports: 
+      - "14331:1433" 
+    volumes: 
+      - ./db:/usr/script
+      - sqlserver_data:/var/opt/mssql
+ 
+  app_php: 
     build: ./app
-    ports:
-      - "8080:80"
+    command: php -S 0.0.0.0:8080 -t public
+    container_name: app_php
+    networks:
+      - huflit-network
+    environment: 
+      - DB_HOST=mssql_single 
+      - DB_PORT=1433 
+      - DB_NAME=Shop 
+      - DB_USER=sa 
+      - DB_PASS=${MSSQL_SA_PASSWORD}
+    ports: 
+      - "8080:8080"
     volumes:
-      - ./app/public:/var/www/html
-    depends_on:
-      - db
+      - ./app:/var/www/html
+    depends_on: 
+      - mssql_single
 
-  db:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: mydb
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-    ports:
-      - "3306:3306"
-    volumes:
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./db/seed.sql:/docker-entrypoint-initdb.d/seed.sql
+volumes:
+  sqlserver_data:
+    
+networks:
+    huflit-network:
+        name: huflit-network
+        driver: bridge
