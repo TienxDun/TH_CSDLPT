@@ -13,11 +13,11 @@ services:
     volumes: 
       - ./db:/usr/script
       - sqlserver_data:/var/opt/mssql
- 
-  app_php: 
+
+  api_php_123456: 
     build: ./app
     command: php -S 0.0.0.0:8080 -t public
-    container_name: app_php
+    container_name: api_php_123456
     networks:
       - huflit-network
     environment: 
@@ -33,6 +33,16 @@ services:
     depends_on: 
       - mssql_single
 
+  app_php_123456:
+    build: ./app
+    command: php -S 0.0.0.0:8081 -t public
+    container_name: app_php_123456
+    networks:
+      - huflit-network
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./app:/var/www/html
 volumes:
   sqlserver_data:
     
