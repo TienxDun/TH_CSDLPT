@@ -20,7 +20,8 @@ function responseError($code, $error)
 
 try {
   $pdo = new PDO($dsn, $_ENV['DB_USER'], $_ENV['DB_PASS'], [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::SQLSRV_ATTR_ENCODING => PDO::SQLSRV_ENCODING_UTF8
   ]);
 } catch (Exception $e) {
   responseError(500, 'DB connection failed');
