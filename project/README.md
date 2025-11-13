@@ -128,11 +128,18 @@ Dự án sử dụng SQL Server với cơ sở dữ liệu tên `Shop`. Các b�
 
 - `GET /sanpham` - Lấy danh sách tất cả sản phẩm
 - `GET /sanpham/{id}` - Lấy thông tin sản phẩm theo ID
+- `POST /sanpham` - Thêm sản phẩm mới (JSON: MaSanPham, TenSanPham, GiaBan, MaKhoHang)
+- `PUT /sanpham/{id}` - Cập nhật sản phẩm (JSON: các trường cần cập nhật)
+- `DELETE /sanpham/{id}` - Xóa sản phẩm (nếu không có trong hóa đơn)
+
+### Hóa Đơn
+
+- `GET /hoadon` - Lấy danh sách tất cả hóa đơn
+- `GET /hoadon/{id}` - Lấy chi tiết hóa đơn (bao gồm khách hàng và chi tiết sản phẩm)
 
 ### Các API khác (chưa triển khai)
 
 - `/khachhang` - Quản lý khách hàng
-- `/hoadon` - Quản lý hóa đơn
 - `/khohang` - Quản lý kho hàng
 - `/chitiethoadon` - Quản lý chi tiết hóa đơn
 

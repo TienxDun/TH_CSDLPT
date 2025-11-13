@@ -57,8 +57,21 @@ $sanpham   = fetchApi("$base/sanpham");
   </form>
   <?php
   if (isset($_GET['id'])) {
-      $ct = fetchApi("$base/chitiethoadon/" . intval($_GET['id']));
-      echo "<pre>" . print_r($ct, true) . "</pre>";
+      $hd = fetchApi("$base/hoadon/" . intval($_GET['id']));
+      if (isset($hd['error'])) {
+        echo "<p style='color:red'>{$hd['error']}</p>";
+      } else {
+        echo "<h2>Hóa đơn #{$hd['MaHoaDon']}</h2>";
+        echo "<p>Ngày: {$hd['Ngay']}</p>";
+        echo "<p>Khách hàng: {$hd['KhachHang']['TenKh']} - {$hd['KhachHang']['DiaChi']} - {$hd['KhachHang']['SoDienThoai']}</p>";
+        echo "<h3>Chi tiết:</h3>";
+        echo "<table border='1'><tr><th>Sản phẩm</th><th>Giá</th><th>SL</th><th>Thành tiền</th></tr>";
+        foreach ($hd['ChiTiet'] as $ct) {
+          echo "<tr><td>{$ct['TenSanPham']}</td><td>{$ct['GiaBan']}</td><td>{$ct['SoLuong']}</td><td>{$ct['ThanhTien']}</td></tr>";
+        }
+        echo "</table>";
+        echo "<p><strong>Tổng tiền: {$hd['TongTien']}</strong></p>";
+      }
   }
   ?>
 </body>
