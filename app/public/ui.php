@@ -32,6 +32,23 @@ $sanpham   = fetchApi("$base/sanpham");
 <head>
   <meta charset="UTF-8">
   <title>Test API</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+    h1 { color: #333; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; background: white; }
+    th, td { padding: 10px; text-align: left; border: 1px solid #ddd; }
+    th { background-color: #f2f2f2; }
+    form { background: white; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
+    input { display: block; width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; }
+    button { padding: 10px 15px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background-color: #218838; }
+    button:disabled { background-color: #ccc; cursor: not-allowed; }
+    .spinner { display: none; border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; margin-left: 10px; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    #message { margin-top: 10px; font-weight: bold; }
+    .error { color: red; }
+    .success { color: green; }
+  </style>
 </head>
 <body>
   <h1>Danh sách Sản phẩm</h1>
@@ -49,6 +66,52 @@ $sanpham   = fetchApi("$base/sanpham");
       <?php endforeach; ?>
     </table>
   <?php endif; ?>
+
+  <h1>Thêm Khách hàng mới</h1>
+  <form id="khachhangForm">
+    <input type="number" id="maKhachHang" placeholder="Mã khách hàng" required><br>
+    <input type="text" id="tenKh" placeholder="Tên khách hàng" required><br>
+    <input type="text" id="diaChi" placeholder="Địa chỉ" required><br>
+    <input type="text" id="soDienThoai" placeholder="Số điện thoại" required><br>
+    <button type="submit" id="submitBtn">Thêm <div class="spinner" id="spinner"></div></button>
+  </form>
+  <p id="message"></p>
+
+  <script>
+    document.getElementById('khachhangForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      const spinner = document.getElementById('spinner');
+      const message = document.getElementById('message');
+      btn.disabled = true;
+      spinner.style.display = 'inline-block';
+      message.textContent = '';
+      message.className = '';
+
+      const data = {
+        MaKhachHang: document.getElementById('maKhachHang').value,
+        TenKh: document.getElementById('tenKh').value,
+        DiaChi: document.getElementById('diaChi').value,
+        SoDienThoai: document.getElementById('soDienThoai').value
+      };
+      try {
+        const response = await fetch('http://localhost:8080/khachhang', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        message.textContent = result.message || result.error;
+        message.className = result.message ? 'success' : 'error';
+      } catch (error) {
+        message.textContent = 'Lỗi: ' + error.message;
+        message.className = 'error';
+      } finally {
+        btn.disabled = false;
+        spinner.style.display = 'none';
+      }
+    });
+  </script>
 
   <h1>Tra cứu hóa đơn</h1>
   <form method="get" action="ui.php">

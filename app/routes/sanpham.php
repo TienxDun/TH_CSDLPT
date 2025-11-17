@@ -22,18 +22,72 @@ switch ($_SERVER['REQUEST_METHOD']) {
     break;
 
   case 'POST':
-    // TODO: thêm sản phẩm
-    responseError(404, 'POST /sanpham chưa được triển khai');
+    // Thêm sản phẩm mới
+    $input = json_decode(file_get_contents('php://input'), true);
+    if (!$input || !isset($input['TenSanPham']) || !isset($input['Gia'])) {
+      responseError(400, 'Thiếu thông tin sản phẩm (TenSanPham, Gia)');
+    }
+    try {
+      $stmt = $pdo->prepare("INSERT INTO SanPham (TenSanPham, Gia) VALUES (?, ?)");
+      $stmt->execute([$input['TenSanPham'], $input['Gia']]);
+      response(['message' => 'Sản phẩm đã được thêm'], 201);
+    } catch (Exception $e) {
+      responseError(500, 'Lỗi khi thêm sản phẩm: ' . $e->getMessage());
+    }
     break;
 
   case 'PUT':
-    // TODO: cập nhật sản phẩm
-    responseError(404, 'PUT /sanpham chưa được triển khai');
+    // Cập nhật sản phẩm
+    if (!isset($segments[1])) {
+      responseError(400, 'Thiếu ID sản phẩm');
+    }
+    $input = json_decode(file_get_contents('php://input'), true);
+    if (!$input) {
+      responseError(400, 'Dữ liệu không hợp lệ');
+    }
+    $updates = [];
+    $params = [];
+    if (isset($input['TenSanPham'])) {
+      $updates[] = 'TenSanPham = ?';
+      $params[] = $input['TenSanPham'];
+    }
+    if (isset($input['Gia'])) {
+      $updates[] = 'Gia = ?';
+      $params[] = $input['Gia'];
+    }
+    if (empty($updates)) {
+      responseError(400, 'Không có trường nào để cập nhật');
+    }
+    $params[] = $segments[1];
+    try {
+      $stmt = $pdo->prepare("UPDATE SanPham SET " . implode(', ', $updates) . " WHERE MaSanPham = ?");
+      $stmt->execute($params);
+      if ($stmt->rowCount() > 0) {
+        response(['message' => 'Sản phẩm đã được cập nhật']);
+      } else {
+        responseError(404, 'Sản phẩm không tồn tại');
+      }
+    } catch (Exception $e) {
+      responseError(500, 'Lỗi khi cập nhật sản phẩm: ' . $e->getMessage());
+    }
     break;
 
   case 'DELETE':
-    // TODO: xóa sản phẩm
-    responseError(404, 'DELETE /sanpham chưa được triển khai');
+    // Xóa sản phẩm
+    if (!isset($segments[1])) {
+      responseError(400, 'Thiếu ID sản phẩm');
+    }
+    try {
+      $stmt = $pdo->prepare("DELETE FROM SanPham WHERE MaSanPham = ?");
+      $stmt->execute([$segments[1]]);
+      if ($stmt->rowCount() > 0) {
+        response(['message' => 'Sản phẩm đã được xóa']);
+      } else {
+        responseError(404, 'Sản phẩm không tồn tại');
+      }
+    } catch (Exception $e) {
+      responseError(500, 'Lỗi khi xóa sản phẩm: ' . $e->getMessage());
+    }
     break;
 
   default:
