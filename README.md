@@ -29,8 +29,8 @@ Dự án TH_CSDLPT là ứng dụng quản lý cơ sở dữ liệu đơn giản
 2. Clone repo:
 
    ```bash
-   git clone https://github.com/TienxDun/TH_CSDLPT_New.git
-   cd TH_CSDLPT_New
+   git clone https://github.com/TienxDun/TH_CSDLPT.git
+   cd TH_CSDLPT
    ```
 
 3. Set biến môi trường cho password SQL Server (hoặc edit docker-compose.yml).
