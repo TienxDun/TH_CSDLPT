@@ -1,18 +1,18 @@
 services: 
-  mssql_single: 
-    image: mcr.microsoft.com/mssql/server:2022-latest 
-    container_name: mssql_single
-    networks:
-      - huflit-network
-    environment: 
-      - ACCEPT_EULA=Y 
-      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
-      - MSSQL_PID=Developer 
-    ports: 
-      - "14331:1433" 
-    volumes: 
-      - ./db:/usr/script
-      - sqlserver_data:/var/opt/mssql
+  # mssql_single: 
+  #   image: mcr.microsoft.com/mssql/server:2022-latest 
+  #   container_name: mssql_single
+  #   networks:
+  #     - huflit-network
+  #   environment: 
+  #     - ACCEPT_EULA=Y 
+  #     - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
+  #     - MSSQL_PID=Developer 
+  #   ports: 
+  #     - "14331:1433" 
+  #   volumes: 
+  #     - ./db:/usr/script
+  #     - sqlserver_data:/var/opt/mssql
  
   api_php_123456: 
     build: ./app
@@ -21,7 +21,7 @@ services:
     networks:
       - huflit-network
     environment: 
-      - DB_HOST=mssql_single 
+      - DB_HOST=mssql_global_123456
       - DB_PORT=1433 
       - DB_NAME=Shop 
       - DB_USER=sa 
@@ -31,7 +31,7 @@ services:
     volumes:
       - ./app:/var/www/html
     depends_on: 
-      - mssql_single
+      - mssql_global_123456
   app_php_123456:
       build: ./app
       command: php -S 0.0.0.0:8081 -t public
@@ -42,9 +42,57 @@ services:
         - "8081:8081"
       volumes:
         - ./app:/var/www/html
+  mssql_site_a_123456:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_site_a_123456
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
+      - MSSQL_PID=Developer
+    ports:
+      - "14332:1433"
+    networks:
+      - huflit-network
+    volumes:
+      - ./db/site_a:/usr/script
+      - sqlserver_data_site_a:/var/opt/mssql
 
+  mssql_site_b_123456:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_site_b_123456
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
+      - MSSQL_PID=Developer
+    ports:
+      - "14333:1433"
+    networks:
+      - huflit-network
+    volumes:
+      - ./db/site_b:/usr/script
+      - sqlserver_data_site_b:/var/opt/mssql
+
+  mssql_global_123456:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_global_123456
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
+      - MSSQL_PID=Developer
+    ports:
+      - "14334:1433"
+    networks:
+      - huflit-network
+    volumes:
+      - ./db/global:/usr/script
+      - sqlserver_data_global:/var/opt/mssql
 volumes:
-  sqlserver_data:
+  sqlserver_data_global: # đổi tên từ volume cũ sqlserver_data
+    name: sqlserver_data_global
+  sqlserver_data_site_a:
+    name: sqlserver_data_site_a
+  sqlserver_data_site_b:
+    name: sqlserver_data_site_b
     
 networks:
     huflit-network:
