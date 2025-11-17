@@ -21,8 +21,10 @@ services:
     networks:
       - huflit-network
     environment: 
-      - DB_HOST=mssql_global_123456
-      - DB_PORT=1433 
+      - DB_HOST=mssql_global_123456  # đưa vào comment
+      # - DB_HOST=mssql_site_a_123456    # thêm host của site a
+      # - DB_HOST=mssql_site_b_123456  # thêm host của site b nhưng chưa dùng
+      - DB_PORT=1433
       - DB_NAME=Shop 
       - DB_USER=sa 
       - DB_PASS=${MSSQL_SA_PASSWORD}
