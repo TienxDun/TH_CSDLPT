@@ -15,7 +15,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
       }
     } else {
       // GET /sanpham
-      $stmt = $pdo->query("SELECT * FROM SanPham");
+      $stmt = $pdo->query("SELECT s.*, k.TenKhoHang FROM SanPham s JOIN KhoHang k ON s.MaKhoHang = k.MaKhoHang");
       $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
       response($items);
     }
@@ -24,12 +24,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
   case 'POST':
     // Thêm sản phẩm mới
     $input = json_decode(file_get_contents('php://input'), true);
-    if (!$input || !isset($input['TenSanPham']) || !isset($input['Gia'])) {
-      responseError(400, 'Thiếu thông tin sản phẩm (TenSanPham, Gia)');
+    if (!$input || !isset($input['MaSanPham']) || !isset($input['TenSanPham']) || !isset($input['Gia']) || !isset($input['MaKhoHang'])) {
+      responseError(400, 'Thiếu thông tin sản phẩm (MaSanPham, TenSanPham, Gia, MaKhoHang)');
     }
     try {
-      $stmt = $pdo->prepare("INSERT INTO SanPham (TenSanPham, Gia) VALUES (?, ?)");
-      $stmt->execute([$input['TenSanPham'], $input['Gia']]);
+      $stmt = $pdo->prepare("INSERT INTO SanPham (MaSanPham, TenSanPham, GiaBan, MaKhoHang) VALUES (?, ?, ?, ?)");
+      $stmt->execute([$input['MaSanPham'], $input['TenSanPham'], $input['Gia'], $input['MaKhoHang']]);
       response(['message' => 'Sản phẩm đã được thêm'], 201);
     } catch (Exception $e) {
       responseError(500, 'Lỗi khi thêm sản phẩm: ' . $e->getMessage());
@@ -52,8 +52,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
       $params[] = $input['TenSanPham'];
     }
     if (isset($input['Gia'])) {
-      $updates[] = 'Gia = ?';
+      $updates[] = 'GiaBan = ?';
       $params[] = $input['Gia'];
+    }
+    if (isset($input['MaKhoHang'])) {
+      $updates[] = 'MaKhoHang = ?';
+      $params[] = $input['MaKhoHang'];
     }
     if (empty($updates)) {
       responseError(400, 'Không có trường nào để cập nhật');

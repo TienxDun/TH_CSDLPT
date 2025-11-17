@@ -1,45 +1,69 @@
 # TH_CSDLPT
 
-Dự án TH_CSDLPT là một ứng dụng web đơn giản được xây dựng bằng PHP và sử dụng cơ sở dữ liệu, được container hóa bằng Docker để dễ dàng triển khai và quản lý.
+Dự án TH_CSDLPT là ứng dụng quản lý cơ sở dữ liệu đơn giản với API RESTful PHP và giao diện web, sử dụng SQL Server, container hóa bằng Docker.
 
 ## Cấu trúc dự án
 
-- `docker-compose.yml`: Cấu hình Docker Compose để chạy ứng dụng và cơ sở dữ liệu.
-- `app/`: Thư mục chứa mã nguồn ứng dụng PHP.
-  - `Dockerfile`: Cấu hình Docker cho ứng dụng PHP.
-  - `public/index.php`: File chính của ứng dụng web.
-- `db/`: Thư mục chứa dữ liệu cơ sở dữ liệu.
-  - `init.sql`: Script khởi tạo cơ sở dữ liệu.
-  - `seed.sql`: Script chèn dữ liệu mẫu.
+- `docker-compose.yml`: Cấu hình Docker Compose (SQL Server, API PHP, UI PHP).
+- `app/`: Mã nguồn PHP.
+  - `Dockerfile`: Build image PHP.
+  - `public/index.php`: Router API.
+  - `routes/`: Handlers cho từng endpoint (sanpham.php, khachhang.php, etc.).
+  - `common.php`: Kết nối DB và helpers.
+  - `public/ui.php`: Giao diện web quản lý.
+- `db/`: Scripts DB.
+  - `init.sql`: Tạo tables (KhoHang, SanPham, KhachHang, HoaDon, ChiTietHoaDon).
+  - `seed.sql`: Dữ liệu mẫu.
 
 ## Công nghệ sử dụng
 
-- **PHP**: Ngôn ngữ lập trình phía server.
-- **Docker & Docker Compose**: Container hóa ứng dụng.
-- **Cơ sở dữ liệu**: (Có thể là MySQL hoặc PostgreSQL, tùy thuộc vào cấu hình).
+- **PHP 8**: API và UI.
+- **SQL Server**: Cơ sở dữ liệu.
+- **Docker & Docker Compose**: Container hóa.
+- **HTML/CSS/JS**: Giao diện web.
 
 ## Cài đặt và chạy
 
-1. Đảm bảo bạn đã cài đặt Docker và Docker Compose trên máy tính.
+1. Cài đặt Docker và Docker Compose.
 
-2. Clone repository này về máy:
+2. Clone repo:
 
    ```bash
    git clone https://github.com/TienxDun/TH_CSDLPT_New.git
    cd TH_CSDLPT_New
    ```
 
-3. Chạy ứng dụng bằng Docker Compose:
+3. Set biến môi trường cho password SQL Server (hoặc edit docker-compose.yml).
+
+4. Chạy:
 
    ```bash
    docker-compose up -d
    ```
 
-4. Truy cập ứng dụng tại `http://localhost` (hoặc cổng được cấu hình trong docker-compose.yml).
+5. Truy cập:
+   - UI: `http://localhost:8081`
+   - API: `http://localhost:8080`
+
+## API Endpoints
+
+- **Sản phẩm** (`/sanpham`): GET (list/all), POST (add), PUT (update), DELETE (remove).
+- **Khách hàng** (`/khachhang`): GET, POST, PUT, DELETE.
+- **Hóa đơn** (`/hoadon`): GET (list), POST (add).
+- **Chi tiết hóa đơn** (`/chitiethoadon`): GET (by MaHoaDon), POST (add item).
+- **Kho hàng** (`/khohang`): GET (list).
+
+## Giao diện Web
+
+UI tại `ui.php` với menu chuyển trang:
+
+- **Sản phẩm**: Thêm, danh sách (với kho), edit, delete.
+- **Khách hàng**: Thêm, danh sách, edit, delete.
+- **Hóa đơn**: Thêm, danh sách, tra cứu chi tiết.
+- **Chi tiết hóa đơn**: Xem chi tiết, thêm sản phẩm vào hóa đơn.
+- **Kho hàng**: Danh sách kho.
 
 ## Dừng ứng dụng
-
-Để dừng ứng dụng, chạy:
 
 ```bash
 docker-compose down
@@ -47,7 +71,7 @@ docker-compose down
 
 ## Đóng góp
 
-Nếu bạn muốn đóng góp cho dự án, vui lòng tạo một pull request hoặc liên hệ với tác giả.
+Tạo pull request hoặc liên hệ tác giả.
 
 ## Tác giả
 
@@ -55,4 +79,4 @@ Nếu bạn muốn đóng góp cho dự án, vui lòng tạo một pull request 
 
 ## Giấy phép
 
-Dự án này được phân phối dưới giấy phép MIT. Xem file `LICENSE` để biết thêm chi tiết.
+MIT License.

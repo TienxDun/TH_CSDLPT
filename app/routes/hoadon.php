@@ -24,13 +24,20 @@ switch ($_SERVER['REQUEST_METHOD']) {
   case 'POST':
     // Thêm hóa đơn mới
     $input = json_decode(file_get_contents('php://input'), true);
-    if (!$input || !isset($input['MaHoaDon']) || !isset($input['MaKhachHang']) || !isset($input['Ngay'])) {
-      responseError(400, 'Thiếu thông tin hóa đơn (MaHoaDon, MaKhachHang, Ngay)');
+    if (!$input || !isset($input['MaKhachHang']) || !isset($input['Ngay'])) {
+      responseError(400, 'Thiếu thông tin hóa đơn (MaKhachHang, Ngay)');
+    }
+    // Generate MaHoaDon if not provided or auto
+    $maHoaDon = $input['MaHoaDon'] ?? null;
+    if (!$maHoaDon) {
+      $stmt = $pdo->query("SELECT MAX(MaHoaDon) as maxId FROM HoaDon");
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+      $maHoaDon = ($row['maxId'] ?? 0) + 1;
     }
     try {
       $stmt = $pdo->prepare("INSERT INTO HoaDon (MaHoaDon, MaKhachHang, Ngay) VALUES (?, ?, ?)");
-      $stmt->execute([$input['MaHoaDon'], $input['MaKhachHang'], $input['Ngay']]);
-      response(['message' => 'Hóa đơn đã được thêm'], 201);
+      $stmt->execute([$maHoaDon, $input['MaKhachHang'], $input['Ngay']]);
+      response(['message' => 'Hóa đơn đã được thêm', 'MaHoaDon' => $maHoaDon], 201);
     } catch (Exception $e) {
       responseError(500, 'Lỗi khi thêm hóa đơn: ' . $e->getMessage());
     }
