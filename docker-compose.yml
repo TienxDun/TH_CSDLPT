@@ -100,6 +100,19 @@ services:
     volumes:
       - ./db/global:/usr/script
       - sqlserver_data_global:/var/opt/mssql
+
+  monitor_php_123456:
+    build: ./monitor
+    command: php /app/monitor.php
+    container_name: monitor_php_123456
+    networks:
+      - huflit-network
+    depends_on:
+      - mssql_global_123456
+      - mssql_site_a_123456
+      - mssql_site_b_123456
+    volumes:
+      - ./monitor:/app
 volumes:
   sqlserver_data_global: # đổi tên từ volume cũ sqlserver_data
     name: sqlserver_data_global

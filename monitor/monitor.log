@@ -1,0 +1,24 @@
+[2025-11-17 18:37:25] Checked A => mssql_site_a_123456: ok
+[2025-11-17 18:37:25] Checked B => mssql_site_b_123456: ok
+[2025-11-17 18:37:25] Checked G => mssql_global_123456: ok
+[2025-11-17 18:38:25] Checked A => mssql_site_a_123456: ok
+[2025-11-17 18:38:25] Checked B => mssql_site_b_123456: ok
+[2025-11-17 18:38:25] Checked G => mssql_global_123456: ok
+[2025-11-17 18:39:50] Checked A => mssql_site_a_123456: ok
+[2025-11-17 18:39:53] Site B => mssql_site_b_123456 no response.
+[2025-11-17 18:39:53] Checked G => mssql_global_123456: ok
+[2025-11-17 18:40:05] Site B => mssql_site_b_123456 comeback. Enqueued to sync.
+[2025-11-17 18:40:26] Sync result: Đồng bộ site B hoàn tất
+[2025-11-17 18:40:26] Sync site B success.
+[2025-11-17 18:40:56] Checked A => mssql_site_a_123456: ok
+[2025-11-17 18:40:56] Checked B => mssql_site_b_123456: ok
+[2025-11-17 18:40:56] Checked G => mssql_global_123456: ok
+[2025-11-17 18:41:56] Checked A => mssql_site_a_123456: ok
+[2025-11-17 18:41:56] Checked B => mssql_site_b_123456: ok
+[2025-11-17 18:41:56] Checked G => mssql_global_123456: ok
+[2025-11-17 18:42:56] Checked A => mssql_site_a_123456: ok
+[2025-11-17 18:42:56] Checked B => mssql_site_b_123456: ok
+[2025-11-17 18:42:56] Checked G => mssql_global_123456: ok
+[2025-11-17 18:43:56] Checked A => mssql_site_a_123456: ok
+[2025-11-17 18:43:56] Checked B => mssql_site_b_123456: ok
+[2025-11-17 18:43:56] Checked G => mssql_global_123456: ok

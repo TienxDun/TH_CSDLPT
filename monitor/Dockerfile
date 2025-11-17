@@ -22,4 +22,4 @@ RUN pecl install sqlsrv pdo_sqlsrv \
     && docker-php-ext-enable sqlsrv pdo_sqlsrv
 
 # Set working dir
-WORKDIR /var/www/html
+WORKDIR /app
