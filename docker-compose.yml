@@ -21,19 +21,31 @@ services:
     networks:
       - huflit-network
     environment: 
-      - DB_HOST=mssql_global_123456  # đưa vào comment
-      # - DB_HOST=mssql_site_a_123456    # thêm host của site a
-      # - DB_HOST=mssql_site_b_123456  # thêm host của site b nhưng chưa dùng
-      - DB_PORT=1433
-      - DB_NAME=Shop 
-      - DB_USER=sa 
-      - DB_PASS=${MSSQL_SA_PASSWORD}
+      - DB_SITE_A_HOST=mssql_site_a_123456
+      - DB_SITE_A_PORT=1433
+      - DB_SITE_A_NAME=Shop
+      - DB_SITE_A_USER=sa
+      - DB_SITE_A_PASS=${MSSQL_SA_PASSWORD}
+
+      - DB_SITE_B_HOST=mssql_site_b_123456
+      - DB_SITE_B_PORT=1433
+      - DB_SITE_B_NAME=Shop
+      - DB_SITE_B_USER=sa
+      - DB_SITE_B_PASS=${MSSQL_SA_PASSWORD}
+
+      # - DB_GLOBAL_HOST=mssql_global_123456
+      # - DB_GLOBAL_PORT=1433
+      # - DB_GLOBAL_NAME=Shop
+      # - DB_GLOBAL_USER=sa
+      # - DB_GLOBAL_PASS=${MSSQL_SA_PASSWORD}
     ports: 
       - "8080:8080"
     volumes:
       - ./app:/var/www/html
     depends_on: 
-      - mssql_global_123456
+      # - mssql_global_123456
+      - mssql_site_a_123456
+      - mssql_site_b_123456
   app_php_123456:
       build: ./app
       command: php -S 0.0.0.0:8081 -t public
