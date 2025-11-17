@@ -77,6 +77,19 @@ $sanpham   = fetchApi("$base/sanpham");
   </form>
   <p id="message"></p>
 
+  <h1>Danh sách Khách hàng</h1>
+  <div id="khachhangList"></div>
+
+  <h1>Chỉnh sửa Khách hàng</h1>
+  <form id="editForm" style="display:none;">
+    <input type="number" id="editMaKhachHang" placeholder="Mã khách hàng" readonly><br>
+    <input type="text" id="editTenKh" placeholder="Tên khách hàng" required><br>
+    <input type="text" id="editDiaChi" placeholder="Địa chỉ" required><br>
+    <input type="text" id="editSoDienThoai" placeholder="Số điện thoại" required><br>
+    <button type="submit">Cập nhật</button>
+    <button type="button" onclick="cancelEdit()">Hủy</button>
+  </form>
+
   <script>
     document.getElementById('khachhangForm').addEventListener('submit', async function(e) {
       e.preventDefault();
@@ -103,6 +116,7 @@ $sanpham   = fetchApi("$base/sanpham");
         const result = await response.json();
         message.textContent = result.message || result.error;
         message.className = result.message ? 'success' : 'error';
+        if (result.message) loadKhachHang(); // Reload list after add
       } catch (error) {
         message.textContent = 'Lỗi: ' + error.message;
         message.className = 'error';
@@ -111,6 +125,75 @@ $sanpham   = fetchApi("$base/sanpham");
         spinner.style.display = 'none';
       }
     });
+
+    async function loadKhachHang() {
+      try {
+        const response = await fetch('http://localhost:8080/khachhang');
+        const khachhang = await response.json();
+        let html = '<table><tr><th>ID</th><th>Tên</th><th>Địa chỉ</th><th>SĐT</th><th>Actions</th></tr>';
+        khachhang.forEach(kh => {
+          html += `<tr><td>${kh.MaKhachHang}</td><td>${kh.TenKh}</td><td>${kh.DiaChi}</td><td>${kh.SoDienThoai}</td><td><button onclick="editKhachHang(${kh.MaKhachHang})">Edit</button> <button onclick="deleteKhachHang(${kh.MaKhachHang})">Delete</button></td></tr>`;
+        });
+        html += '</table>';
+        document.getElementById('khachhangList').innerHTML = html;
+      } catch (error) {
+        document.getElementById('khachhangList').innerHTML = 'Lỗi tải danh sách';
+      }
+    }
+
+    function editKhachHang(id) {
+      fetch(`http://localhost:8080/khachhang/${id}`)
+        .then(r => r.json())
+        .then(kh => {
+          document.getElementById('editMaKhachHang').value = kh.MaKhachHang;
+          document.getElementById('editTenKh').value = kh.TenKh;
+          document.getElementById('editDiaChi').value = kh.DiaChi;
+          document.getElementById('editSoDienThoai').value = kh.SoDienThoai;
+          document.getElementById('editForm').style.display = 'block';
+        });
+    }
+
+    function cancelEdit() {
+      document.getElementById('editForm').style.display = 'none';
+    }
+
+    document.getElementById('editForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('editMaKhachHang').value;
+      const data = {
+        TenKh: document.getElementById('editTenKh').value,
+        DiaChi: document.getElementById('editDiaChi').value,
+        SoDienThoai: document.getElementById('editSoDienThoai').value
+      };
+      try {
+        const response = await fetch(`http://localhost:8080/khachhang/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        alert(result.message || result.error);
+        loadKhachHang();
+        cancelEdit();
+      } catch (error) {
+        alert('Lỗi: ' + error.message);
+      }
+    });
+
+    async function deleteKhachHang(id) {
+      if (confirm('Xóa khách hàng này?')) {
+        try {
+          const response = await fetch(`http://localhost:8080/khachhang/${id}`, { method: 'DELETE' });
+          const result = await response.json();
+          alert(result.message || result.error);
+          loadKhachHang();
+        } catch (error) {
+          alert('Lỗi: ' + error.message);
+        }
+      }
+    }
+
+    loadKhachHang(); // Load list on page load
   </script>
 
   <h1>Tra cứu hóa đơn</h1>
