@@ -1,4 +1,4 @@
-CREATE DATABASE Shop COLLATE Vietnamese_100_CI_AS;
+CREATE DATABASE Shop;
 GO
 USE Shop;
 GO
@@ -35,5 +35,3 @@ CREATE TABLE dbo.ChiTietHoaDon (
   SoLuong INT,
   PRIMARY KEY (MaHoaDon, MaSanPham)
 );
-
-PRINT 'Database initialized successfully';

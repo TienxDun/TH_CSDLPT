@@ -21,5 +21,3 @@ INSERT INTO dbo.ChiTietHoaDon (MaHoaDon, MaSanPham, SoLuong) VALUES
   (1001, 101, 10),
   (1001, 102, 5),
   (1002, 201, 1);
-
-PRINT 'Database initialized successfully';
